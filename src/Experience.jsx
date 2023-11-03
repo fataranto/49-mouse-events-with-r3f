@@ -1,10 +1,12 @@
 import { useFrame } from '@react-three/fiber'
-import { OrbitControls } from '@react-three/drei'
+import { meshBounds, useGLTF, OrbitControls } from '@react-three/drei'
 import { useRef } from 'react'
+
 
 export default function Experience()
 {
     const cube = useRef()
+    const hamburguer = useGLTF('./hamburger.glb')
     
     useFrame((state, delta) =>
     {
@@ -20,8 +22,6 @@ export default function Experience()
 
     return <>
 
-        
-
         <OrbitControls makeDefault />
 
         <directionalLight position={ [ 1, 2, 3 ] } intensity={ 1.5 } />
@@ -32,7 +32,15 @@ export default function Experience()
             <meshStandardMaterial color="orange" />
         </mesh>
 
-        <mesh ref={ cube } position-x={ 2 } scale={ 1.5 } onClick={ eventHandler }>
+        <mesh 
+            ref={ cube } 
+            raycast={ meshBounds }
+            position-x={ 2 } 
+            scale={ 1.5 } 
+            onClick={ eventHandler }
+            onPointerEnter={ () => document.body.style.cursor = 'pointer' }
+            onPointerLeave={ () => document.body.style.cursor = 'auto' }
+        >
             <boxGeometry />
             <meshStandardMaterial  />
         </mesh>
@@ -41,6 +49,16 @@ export default function Experience()
             <planeGeometry />
             <meshStandardMaterial color="greenyellow" />
         </mesh>
+
+        <primitive 
+        object={ hamburguer.scene }
+        scale={ 0.25 }
+        position={ [ 0, 0.5, 0 ] }
+        onClick={ (e) => {
+            e.stopPropagation();
+            console.log(e.object.name)    
+        } }
+        />
 
     </>
 }
